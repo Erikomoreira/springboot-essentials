@@ -12,7 +12,7 @@
 	<artifactId>springboot-essentials</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>springboot-essentials</name>
-	<description>O essencial de Spring</description>
+	<description>O essencial de Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
