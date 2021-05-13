@@ -1,6 +1,7 @@
 package br.com.erik.springboot.controller;
 
 import br.com.erik.springboot.domain.Anime;
+import br.com.erik.springboot.service.AnimeService;
 import br.com.erik.springboot.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -12,17 +13,18 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("anime")
+@RequestMapping("animes")
 @Log4j2
 @RequiredArgsConstructor
 public class AnimeController {
 
     private final DateUtil dateUtil;
+    private final AnimeService animeService;
 
-    @GetMapping("list")
+    @GetMapping
     public List<Anime> list(){
         log.info(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
-        return List.of(new Anime("Boku No Hero"), new Anime("Berserk"));
+        return animeService.listAll();
     }
 
 }
