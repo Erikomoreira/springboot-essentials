@@ -44,7 +44,7 @@ public class AnimeService {
 
     public void replace(AnimePutRequestBody animePutRequestBody) {
         var savedAnime = findByIdOrThrowBadRequestException(animePutRequestBody.getId());
-        Anime anime = mapper.toAnime(animePutRequestBody);
+        var anime = mapper.toAnime(animePutRequestBody);
         anime.setId(savedAnime.getId());
         animeRepository.save(anime);
     }
