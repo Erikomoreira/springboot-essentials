@@ -1,14 +1,13 @@
 package br.com.erik.springboot.service;
 
 import br.com.erik.springboot.domain.Anime;
+import br.com.erik.springboot.exception.BadRequestException;
 import br.com.erik.springboot.mapper.AnimeMapper;
 import br.com.erik.springboot.repository.AnimeRepository;
 import br.com.erik.springboot.requests.AnimePostRequestBody;
 import br.com.erik.springboot.requests.AnimePutRequestBody;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class AnimeService {
 
     public Anime findByIdOrThrowBadRequestException(Long id) {
         return animeRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Anime not Found"));
+                .orElseThrow(() -> new BadRequestException("Anime not Found"));
     }
 
     public Anime save(AnimePostRequestBody animePostRequestBody) {

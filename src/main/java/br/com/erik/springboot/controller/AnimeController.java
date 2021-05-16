@@ -29,13 +29,13 @@ public class AnimeController {
         return ResponseEntity.ok(animeService.listAll());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}")// url/1
     public ResponseEntity<Anime> findById(@PathVariable Long id){
         log.info(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
         return ResponseEntity.ok(animeService.findByIdOrThrowBadRequestException(id));
     }
 
-    @GetMapping("/find/{name}")
+    @GetMapping("/find/{name}")// url/find/name?name=Cavaleiros do Zodiaco
     public ResponseEntity<List<Anime>> findById(@RequestParam String name){
         log.info(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
         return ResponseEntity.ok(animeService.findByName(name));
