@@ -8,6 +8,7 @@ import br.com.erik.springboot.requests.AnimePostRequestBody;
 import br.com.erik.springboot.requests.AnimePutRequestBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class AnimeService {
                 .orElseThrow(() -> new BadRequestException("Anime not Found"));
     }
 
+    @Transactional // da o rollback, caso exista uma checked exception
     public Anime save(AnimePostRequestBody animePostRequestBody) {
         return animeRepository.save(mapper.toAnime(animePostRequestBody));
     }
