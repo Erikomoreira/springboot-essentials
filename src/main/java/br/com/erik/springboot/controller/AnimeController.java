@@ -7,6 +7,8 @@ import br.com.erik.springboot.service.AnimeService;
 import br.com.erik.springboot.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,10 +26,10 @@ public class AnimeController {
     private final DateUtil dateUtil;
     private final AnimeService animeService;
 
-    @GetMapping
-    public ResponseEntity<List<Anime>> list(){
+    @GetMapping //page=0&size=10&sort=date,desc
+    public ResponseEntity<Page<Anime>> list(Pageable pageable){
         log.info(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
-        return ResponseEntity.ok(animeService.listAll());
+        return ResponseEntity.ok(animeService.listAll(pageable));
     }
 
     @GetMapping("/{id}")// url/1
@@ -37,7 +39,7 @@ public class AnimeController {
     }
 
     @GetMapping("/find/{name}")// url/find/name?name=Cavaleiros do Zodiaco
-    public ResponseEntity<List<Anime>> findById(@RequestParam String name){
+    public ResponseEntity<List<Anime>> findByName(@RequestParam String name){
         log.info(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
         return ResponseEntity.ok(animeService.findByName(name));
     }
