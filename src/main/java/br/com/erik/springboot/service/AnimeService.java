@@ -1,6 +1,7 @@
 package br.com.erik.springboot.service;
 
 import br.com.erik.springboot.domain.Anime;
+import br.com.erik.springboot.mapper.AnimeMapper;
 import br.com.erik.springboot.repository.AnimeRepository;
 import br.com.erik.springboot.requests.AnimePostRequestBody;
 import br.com.erik.springboot.requests.AnimePutRequestBody;
@@ -15,6 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AnimeService {
 
+    private final AnimeMapper mapper;
+
     private final AnimeRepository animeRepository;
 
     public List<Anime> listAll() {
@@ -27,7 +30,7 @@ public class AnimeService {
     }
 
     public Anime save(AnimePostRequestBody animePostRequestBody) {
-        return animeRepository.save(Anime.builder().name(animePostRequestBody.getName()).build());
+        return animeRepository.save(mapper.toAnime(animePostRequestBody));
     }
 
     public void delete(Long id) {
@@ -35,13 +38,9 @@ public class AnimeService {
     }
 
     public void replace(AnimePutRequestBody animePutRequestBody) {
-        Anime savedAnime = findByIdOrThrowBadRequestException(animePutRequestBody.getId());
-
-        Anime anime = Anime.builder()
-                .id(savedAnime.getId())
-                .name(savedAnime.getName())
-                .build();
-
+        var savedAnime = findByIdOrThrowBadRequestException(animePutRequestBody.getId());
+        Anime anime = mapper.toAnime(animePutRequestBody);
+        anime.setId(savedAnime.getId());
         animeRepository.save(anime);
     }
 }
