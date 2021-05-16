@@ -15,6 +15,7 @@ public class ErikWebMvcConfigurer implements WebMvcConfigurer {
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         var pageHandler = new PageableHandlerMethodArgumentResolver();
         pageHandler.setFallbackPageable(PageRequest.of(1,5));
+
         resolvers.add(pageHandler);
     }
 }
