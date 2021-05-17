@@ -12,6 +12,8 @@ import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 
+import static br.com.erik.springboot.util.AnimeCreator.createAnimeToBeSaved;
+
 
 @DataJpaTest
 @DisplayName("Tests for Anime Repository")
@@ -25,7 +27,7 @@ class AnimeRepositoryTest {
     @DisplayName("Save persist anime when Successful")
     void save_PersistAnime_WhenSuccessful() {
 
-        Anime animeToBeSaved = createAnime();
+        Anime animeToBeSaved = createAnimeToBeSaved();
 
         Anime animeSaved = this.animeRepository.save(animeToBeSaved);
 
@@ -41,7 +43,7 @@ class AnimeRepositoryTest {
     @DisplayName("Save updates anime when Successful")
     void save_UpdatesAnime_WhenSuccessful() {
 
-        Anime animeToBeSaved = createAnime();
+        Anime animeToBeSaved = createAnimeToBeSaved();
 
         Anime animeSaved = this.animeRepository.save(animeToBeSaved);
 
@@ -61,7 +63,7 @@ class AnimeRepositoryTest {
     @DisplayName("Delete removes anime when Successful")
     void delete_RemovesAnime_WhenSuccessful() {
 
-        Anime animeToBeSaved = createAnime();
+        Anime animeToBeSaved = createAnimeToBeSaved();
 
         Anime animeSaved = this.animeRepository.save(animeToBeSaved);
 
@@ -77,7 +79,7 @@ class AnimeRepositoryTest {
     @DisplayName("Find by name returns list of anime when Successful")
     void findByName_ReturnsListOfAnime_WhenSuccessful() {
 
-        Anime animeToBeSaved = createAnime();
+        Anime animeToBeSaved = createAnimeToBeSaved();
 
         Anime animeSaved = this.animeRepository.save(animeToBeSaved);
 
@@ -114,9 +116,4 @@ class AnimeRepositoryTest {
                 .withMessageContaining("The name cannot be empty");
     }
 
-    private Anime createAnime(){
-        return Anime.builder()
-                .name("Hajime no Ippo")
-                .build();
-    }
 }

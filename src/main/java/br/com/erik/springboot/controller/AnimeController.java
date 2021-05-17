@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -28,25 +27,21 @@ public class AnimeController {
 
     @GetMapping //page=0&size=10&sort=date,desc
     public ResponseEntity<Page<Anime>> list(Pageable pageable){
-        log.info(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
         return ResponseEntity.ok(animeService.listAll(pageable));
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<Anime>> listAllNonPageable(){
-        log.info(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
         return ResponseEntity.ok(animeService.listAllNonPageable());
     }
 
     @GetMapping("/{id}")// url/1
     public ResponseEntity<Anime> findById(@PathVariable Long id){
-        log.info(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
         return ResponseEntity.ok(animeService.findByIdOrThrowBadRequestException(id));
     }
 
     @GetMapping("/find/{name}")// url/find/name?name=Cavaleiros do Zodiaco
     public ResponseEntity<List<Anime>> findByName(@RequestParam String name){
-        log.info(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
         return ResponseEntity.ok(animeService.findByName(name));
     }
 
