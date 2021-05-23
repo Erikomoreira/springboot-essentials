@@ -35,7 +35,7 @@ class AnimeControllerTest {
     private AnimeService animeService;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         PageImpl<Anime> animePage = new PageImpl<>(List.of(AnimeCreator.createValidAnime()));
         BDDMockito.when(animeService.listAll(ArgumentMatchers.any()))
                 .thenReturn(animePage);
@@ -171,6 +171,7 @@ class AnimeControllerTest {
         Assertions.assertThat(entity).isNotNull();
 
         Assertions.assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
     }
 
 }

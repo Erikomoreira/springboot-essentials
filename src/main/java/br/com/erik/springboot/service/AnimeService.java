@@ -18,8 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AnimeService {
 
-    private final AnimeMapper mapper;
-
     private final AnimeRepository animeRepository;
 
     public Page<Anime> listAll(Pageable pageable) {
@@ -34,25 +32,24 @@ public class AnimeService {
         return animeRepository.findByName(name);
     }
 
-    public Anime findByIdOrThrowBadRequestException(Long id) {
+    public Anime findByIdOrThrowBadRequestException(long id) {
         return animeRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Anime not Found"));
     }
 
-    @Transactional // da o rollback, caso exista uma checked exception
+    @Transactional
     public Anime save(AnimePostRequestBody animePostRequestBody) {
-        return animeRepository.save(mapper.toAnime(animePostRequestBody));
+        return animeRepository.save(AnimeMapper.INSTANCE.toAnime(animePostRequestBody));
     }
 
-    public void delete(Long id) {
+    public void delete(long id) {
         animeRepository.delete(findByIdOrThrowBadRequestException(id));
     }
 
     public void replace(AnimePutRequestBody animePutRequestBody) {
         var savedAnime = findByIdOrThrowBadRequestException(animePutRequestBody.getId());
-        var anime = mapper.toAnime(animePutRequestBody);
+        var anime = AnimeMapper.INSTANCE.toAnime(animePutRequestBody);
         anime.setId(savedAnime.getId());
         animeRepository.save(anime);
     }
-
 }
