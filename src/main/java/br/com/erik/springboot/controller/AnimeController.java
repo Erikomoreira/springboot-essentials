@@ -40,7 +40,7 @@ public class AnimeController {
         return ResponseEntity.ok(animeService.findByIdOrThrowBadRequestException(id));
     }
 
-    @GetMapping("/find/{name}")// url/find/name?name=Cavaleiros do Zodiaco
+    @GetMapping("/find")// url/find/name?name=Cavaleiros do Zodiaco
     public ResponseEntity<List<Anime>> findByName(@RequestParam String name){
         return ResponseEntity.ok(animeService.findByName(name));
     }
