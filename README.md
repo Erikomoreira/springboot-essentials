@@ -1,6 +1,6 @@
 # Springboot-essentials :rocket:
 
-Curso de Spring Boot. :white_check_mark:
+Curso de Spring Boot :white_check_mark:
 
 Conteúdo :books: 
 
