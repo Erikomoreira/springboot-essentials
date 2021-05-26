@@ -42,7 +42,7 @@ Conteúdo :books:
 |39 | Spring Security pt 01 Autenticação em memória | [Clique aqui](https://github.com/Erikomoreira/springboot-essentials/tree/aula_39/src/main/java/br/com/erik/springboot) |
 |40 | Spring Security pt 01 CSRF Token | [Clique aqui](https://github.com/Erikomoreira/springboot-essentials/tree/aula_40/src/main/java/br/com/erik/springboot) |
 |41 | Spring Security pt 02 Segurança a nível de métodos com PreAuthorize | [Clique aqui](https://github.com/Erikomoreira/springboot-essentials/tree/aula_41/src/main/java/br/com/erik/springboot) |
-|42 | Spring Security pt 03 Authentication Principal e página padrão de | [Clique aqui](https://github.com/Erikomoreira/springboot-essentials/tree/aula_42/src/main/java/br/com/erik/springboot) |
+|42 | Spring Security pt 03 Authentication Principal e página padrão de Login | [Clique aqui](https://github.com/Erikomoreira/springboot-essentials/tree/aula_42/src/main/java/br/com/erik/springboot) |
 |43 | Spring Security pt 04 Autenticação com usuário no banco de dados | [Clique aqui](https://github.com/Erikomoreira/springboot-essentials/tree/aula_43/src/main/java/br/com/erik/springboot) |
 |44 | Spring Security pt 05 Proteção de URL com Antmatcher | [Clique aqui](https://github.com/Erikomoreira/springboot-essentials/tree/aula_44/src/main/java/br/com/erik/springboot) |
 |45 | Spring Security pt 06 Testes de Integração com Spring Security | [Clique aqui](https://github.com/Erikomoreira/springboot-essentials/tree/aula_45/src/main/java/br/com/erik/springboot) |
