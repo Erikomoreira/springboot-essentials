@@ -1,4 +1,4 @@
-# Springboot-essentials :rocket:
+# Spring Boot 2 Essentials :rocket:
 
 Curso de Spring Boot :white_check_mark:
 
