@@ -1,7 +1,9 @@
 package br.com.erik.springboot.integration;
 
 import br.com.erik.springboot.domain.Anime;
+import br.com.erik.springboot.domain.DevUser;
 import br.com.erik.springboot.repository.AnimeRepository;
+import br.com.erik.springboot.repository.DevUserRepository;
 import br.com.erik.springboot.requests.AnimePostRequestBody;
 import br.com.erik.springboot.util.AnimeCreator;
 import br.com.erik.springboot.util.AnimePostRequestBodyCreator;
@@ -10,9 +12,15 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -27,21 +35,62 @@ import java.util.List;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class AnimeControllerIT {
     @Autowired
-    private TestRestTemplate testRestTemplate;
+    @Qualifier(value = "testRestTemplateRoleUser")
+    private TestRestTemplate testRestTemplateRoleUser;
+
+    @Autowired
+    @Qualifier(value = "testRestTemplateRoleAdmin")
+    private TestRestTemplate testRestTemplateRoleAdmin;
+
     @Autowired
     private AnimeRepository animeRepository;
 
-    AnimeControllerIT() {
+    @Autowired
+    private DevUserRepository devUserRepository;
+
+    private static final DevUser USER = DevUser.builder()
+            .name("Erik")
+            .password("{bcrypt}$2a$10$3MoRRvYuH30ikGHoEVU77O2hgBJnCSgcgR206QUYVWZLbhfzDXLtu")
+            .username("erik")
+            .authorities("ROLE_USER")
+            .build();
+
+    private static final DevUser ADMIN = DevUser.builder()
+            .name("Bobito")
+            .password("{bcrypt}$2a$10$3MoRRvYuH30ikGHoEVU77O2hgBJnCSgcgR206QUYVWZLbhfzDXLtu")
+            .username("bob")
+            .authorities("ROLE_ADMIN")
+            .build();
+
+    @TestConfiguration
+    @Lazy
+    static class Config {
+        @Bean(name = "testRestTemplateRoleUser")
+        public TestRestTemplate testRestTemplateRoleUserCreator(@Value("${local.server.port}") int port) {
+            RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder()
+                    .rootUri("http://localhost:" + port)
+                    .basicAuthentication("erik", "test");
+            return new TestRestTemplate(restTemplateBuilder);
+        }
+
+        @Bean(name = "testRestTemplateRoleAdmin")
+        public TestRestTemplate testRestTemplateRoleAdminCreator(@Value("${local.server.port}") int port) {
+            RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder()
+                    .rootUri("http://localhost:" + port)
+                    .basicAuthentication("bob", "test");
+            return new TestRestTemplate(restTemplateBuilder);
+        }
     }
 
     @Test
     @DisplayName("list returns list of anime inside page object when successful")
     void list_ReturnsListOfAnimesInsidePageObject_WhenSuccessful() {
         Anime savedAnime = animeRepository.save(AnimeCreator.createAnimeToBeSaved());
+        devUserRepository.save(USER);
 
         String expectedName = savedAnime.getName();
 
-        PageableResponse<Anime> animePage = testRestTemplate.exchange("/animes", HttpMethod.GET, null,
+        PageableResponse<Anime> animePage = testRestTemplateRoleUser.exchange("/animes", HttpMethod.GET, null,
                 new ParameterizedTypeReference<PageableResponse<Anime>>() {
                 }).getBody();
 
@@ -58,10 +107,11 @@ class AnimeControllerIT {
     @DisplayName(("ListAll returns list of anime when successful"))
     void listAll_ReturnsListOfAnime_WhenSuccessful() {
         Anime savedAnime = animeRepository.save(AnimeCreator.createAnimeToBeSaved());
+        devUserRepository.save(USER);
 
         String expectedName = savedAnime.getName();
 
-        List<Anime> animes = testRestTemplate.exchange("/animes/all", HttpMethod.GET, null,
+        List<Anime> animes = testRestTemplateRoleUser.exchange("/animes/all", HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<Anime>>() {
                 }).getBody();
 
@@ -78,10 +128,12 @@ class AnimeControllerIT {
     void findById_ReturnsAnime_WhenSuccessful() {
 
         Anime savedAnime = animeRepository.save(AnimeCreator.createAnimeToBeSaved());
+        devUserRepository.save(USER);
+
 
         Long expectedId = savedAnime.getId();
 
-        Anime anime = testRestTemplate.getForObject("/animes/{id}", Anime.class, expectedId);
+        Anime anime = testRestTemplateRoleUser.getForObject("/animes/{id}", Anime.class, expectedId);
 
         Assertions.assertThat(anime).isNotNull();
 
@@ -92,12 +144,14 @@ class AnimeControllerIT {
     @DisplayName("findByName returns a list of anime when successful")
     void findByName_ReturnsListOfAnime_WhenSuccessful() {
         Anime savedAnime = animeRepository.save(AnimeCreator.createAnimeToBeSaved());
+        devUserRepository.save(USER);
+
 
         String expectedName = savedAnime.getName();
 
         String url = String.format("/animes/find?name=%s", expectedName);
 
-        List<Anime> animes = testRestTemplate.exchange(url, HttpMethod.GET, null,
+        List<Anime> animes = testRestTemplateRoleUser.exchange(url, HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<Anime>>() {
                 }).getBody();
 
@@ -112,8 +166,9 @@ class AnimeControllerIT {
     @Test
     @DisplayName(("findByName returns an empty list of anime when anime is not found"))
     void findByName_ReturnsEmptyListOfAnime_WhenAnimeIsNotFound() {
+        devUserRepository.save(USER);
 
-        List<Anime> animes = testRestTemplate.exchange("/animes/find?name=dbz", HttpMethod.GET, null,
+        List<Anime> animes = testRestTemplateRoleUser.exchange("/animes/find?name=dbz", HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<Anime>>() {
                 }).getBody();
 
@@ -125,9 +180,11 @@ class AnimeControllerIT {
     @Test
     @DisplayName(("save returns anime when successful"))
     void save_ReturnsAnime_WhenSuccessful() {
+        devUserRepository.save(USER);
+
         AnimePostRequestBody animePostRequestBody = AnimePostRequestBodyCreator.createAnimePostRequestBody();
 
-        ResponseEntity<Anime> animeResponseEntity = testRestTemplate.postForEntity("/animes", animePostRequestBody, Anime.class);
+        ResponseEntity<Anime> animeResponseEntity = testRestTemplateRoleUser.postForEntity("/animes", animePostRequestBody, Anime.class);
 
         Assertions.assertThat(animeResponseEntity).isNotNull();
         Assertions.assertThat(animeResponseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -139,12 +196,12 @@ class AnimeControllerIT {
     @Test
     @DisplayName(("replace updates anime when successful"))
     void replace_UpdatesAnime_WhenSuccessful() {
-
         Anime savedAnime = animeRepository.save(AnimeCreator.createAnimeToBeSaved());
+        devUserRepository.save(USER);
 
         savedAnime.setName("new name");
 
-        ResponseEntity<Void> animeResponseEntity = testRestTemplate.exchange("/animes",
+        ResponseEntity<Void> animeResponseEntity = testRestTemplateRoleUser.exchange("/animes",
                 HttpMethod.PUT, new HttpEntity<>(savedAnime), Void.class);
 
         Assertions.assertThat(animeResponseEntity).isNotNull();
@@ -155,14 +212,30 @@ class AnimeControllerIT {
     @Test
     @DisplayName(("delete removes anime when successful"))
     void delete_RemovesAnime_WhenSuccessful() {
-
         Anime savedAnime = animeRepository.save(AnimeCreator.createAnimeToBeSaved());
+        devUserRepository.save(ADMIN);
 
-        ResponseEntity<Void> animeResponseEntity = testRestTemplate.exchange("/animes/{id}",
+
+        ResponseEntity<Void> animeResponseEntity = testRestTemplateRoleAdmin.exchange("/animes/admin/{id}",
                 HttpMethod.DELETE, null, Void.class, savedAnime.getId());
 
         Assertions.assertThat(animeResponseEntity).isNotNull();
         Assertions.assertThat(animeResponseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+    }
+
+    @Test
+    @DisplayName(("delete returns 403 when user is not admin"))
+    void delete_Returns403_WhenUserIsNotAdmin() {
+        Anime savedAnime = animeRepository.save(AnimeCreator.createAnimeToBeSaved());
+        devUserRepository.save(USER);
+
+
+        ResponseEntity<Void> animeResponseEntity = testRestTemplateRoleUser.exchange("/animes/admin/{id}",
+                HttpMethod.DELETE, null, Void.class, savedAnime.getId());
+
+        Assertions.assertThat(animeResponseEntity).isNotNull();
+        Assertions.assertThat(animeResponseEntity.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
 
     }
 
