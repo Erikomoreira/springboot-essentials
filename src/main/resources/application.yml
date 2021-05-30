@@ -18,3 +18,13 @@ logging:
       hibernate:
         SQL: DEBUG
 
+management:
+  endpoints:
+    web:
+      exposure:
+        #include: "*"
+        include: info, metrics, health
+
+info:
+  app: Spring Boot 2 Essentials
+  website: https://google.com.br
