@@ -1,0 +1,6 @@
+docker-compose up (subir e baixar imagem)
+docker ps (Lista os containers que estão sendo executados no momento)
+CTRL + C (Derruba o container)
+docker ps -a (Lista todos que existem)
+docker-compose down (Remove o container)
+docker container prune (Remover todos os containers sem uso)
