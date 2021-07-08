@@ -51,4 +51,4 @@ Conteúdo :books:
 |48 | Spring Boot Actuator | [Clique aqui](https://github.com/Erikomoreira/springboot-essentials/tree/aula_48/src/main/java/br/com/erik/springboot) |
 |49 | Monitorando aplicação com prometheus | [Clique aqui](https://github.com/Erikomoreira/springboot-essentials/tree/aula_49/src/main/java/br/com/erik/springboot) |
 |50 | Monitorando métricas com gráficos no Grafana | [Clique aqui](https://github.com/Erikomoreira/springboot-essentials/tree/aula_50/src/main/java/br/com/erik/springboot) |
-|51 | Criado imagem com jib e executando via dockercompose | [Clique aqui](https://github.com/Erikomoreira/springboot-essentials/tree/aula_51/src/main/java/br/com/erik/springboot) |
+|51 | Criando imagem com jib e executando via dockercompose | [Clique aqui](https://github.com/Erikomoreira/springboot-essentials/tree/aula_51/src/main/java/br/com/erik/springboot) |
